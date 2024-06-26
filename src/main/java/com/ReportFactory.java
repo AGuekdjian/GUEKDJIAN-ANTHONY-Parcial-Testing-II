@@ -13,24 +13,28 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ReportFactory {
+
+    private static ExtentReports extent;
+
     public static ExtentReports getInstance() {
         ExtentReports extent = new ExtentReports();
-        extent.setSystemInfo("OS", "Windows");
-        extent.setSystemInfo("Navegador", "Chrome");
-        extent.setSystemInfo("Ambiente", "QA");
-        extent.setSystemInfo("Selenium Version", "4.21.0");
+        extent.setSystemInfo("Sistema Operativo", "Windows");
+        extent.setSystemInfo("Navegador Utilizado", "Chrome");
+        extent.setSystemInfo("Entorno", "QA");
+        extent.setSystemInfo("Versión de Selenium", "4.21.0");
         return extent;
     }
 
-    public static void captureScreenshot(ExtentTest test, String testName, WebDriver driver) {
+    public static void takeScreenshot(ExtentTest test, String testName, WebDriver driver) {
         try {
             File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-            String screenshotPath = "reports/screenshots/" + testName + ".png";
-            Files.createDirectories(Paths.get("reports/screenshots"));
+            String screenshotDirectory = "reportes/screenshots";
+            String screenshotPath = screenshotDirectory + "/" + testName + ".png";
+            Files.createDirectories(Paths.get(screenshotDirectory));
             Files.copy(screenshot.toPath(), Paths.get(screenshotPath));
             test.addScreenCaptureFromPath(screenshotPath, testName);
         } catch (IOException e) {
-            test.log(Status.WARNING, "Could not capture screenshot: " + e.getMessage());
+            test.log(Status.WARNING, "No se pudo capturar la pantalla: " + e.getMessage());
         }
     }
 }
